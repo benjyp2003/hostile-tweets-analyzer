@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from manager import Manager
+from app.manager import Manager
 app = FastAPI()
 manager = Manager()
 

@@ -1,16 +1,16 @@
-from typing import Any
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 nltk.download('vader_lexicon')# Compute sentiment labels
 import pandas as pd
 from pandas import DataFrame
 from collections import Counter
+import os
 
 
 class Processor:
     def __init__(self, original_data: list[DataFrame]) -> None:
         self.processed_data = self.initialize_processed_data(original_data)
-
+        self.sentimentIntensityAnalyzer = SentimentIntensityAnalyzer()
 
     def initialize_processed_data(self, original_data):
         """Initialize the processed data with the original data"""
@@ -49,7 +49,7 @@ class Processor:
     def find_text_emotion(self, field_vals: str):
         """find and returns the emotion of the text in a given doc field"""
         try:
-            score = SentimentIntensityAnalyzer().polarity_scores(field_vals)
+            score = self.sentimentIntensityAnalyzer.polarity_scores(field_vals)
             compound = score['compound']
             # Return the emotion based on the compound score
             if compound <= -0.5:
@@ -85,7 +85,12 @@ class Processor:
             list: A list of weapons if the file is loaded successfully, None otherwise """
 
         try:
-            with open('..\data\weapon_list.txt', 'r') as f:
+            # Get the directory of the current file
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # Go up one level and into data directory
+            weapons_file = os.path.join(os.path.dirname(current_dir), 'data', 'weapon_list.txt')
+            
+            with open(weapons_file, 'r') as f:
                 weapons = f.read().splitlines()
             if not weapons:
                 print("No weapons found in the file")

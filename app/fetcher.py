@@ -1,10 +1,7 @@
 import os
-
-import pandas as pd
 from pymongo import MongoClient, errors
 from typing import Any
 
-from app.processor import Processor
 
 
 class Fetcher:
@@ -36,10 +33,3 @@ class Fetcher:
             raise Exception(f"Error reading tweets: {e}")
 
 
-f = Fetcher()
-all = f.fetch_all_docs()
-count = 0
-all =[pd.DataFrame([d]) for d in all]
-
-p = Processor(all)
-print((p.analyze_and_get_processed_data()))

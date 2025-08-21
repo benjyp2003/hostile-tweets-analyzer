@@ -1,6 +1,7 @@
 from typing import Any
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
+nltk.download('vader_lexicon')# Compute sentiment labels
 import pandas as pd
 from pandas import DataFrame
 from collections import Counter

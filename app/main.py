@@ -1,25 +1,37 @@
-from fastapi import FastAPI
-import uvicorn
-
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
 from app.manager import Manager
+
+
+class TweetResponse(BaseModel):
+    """Simple response model for analyzed tweets"""
+    processed_data: List[dict]
+
 app = FastAPI()
 manager = Manager()
 
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the Tweets Analyzer API, use the endpoint /get_analyzed_data to get the analyzed data."}
+async def read_root():
+    try:
+        return {"message": "Welcome to the Iran Tweets Analyzer API, use the endpoint /get_analyzed_data to get the analyzed tweets."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
-
-@app.get("/get_analyzed_data")
-def get_analyzed_data():
-    return manager.get_processed_data()
+@app.get("/get_analyzed_data", response_model=TweetResponse)
+async def get_analyzed_data():
+    try:
+        return manager.get_processed_data()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving analyzed data: {str(e)}")
 
 @app.on_event("startup")
-def startup_event():
-    """
-    This function is called when the application starts.
-    It processes the data and stores it in the manager.
-    """
-    manager.process_data()
+async def startup_event():
+    try:
+        manager.process_data()
+        print("Data processing completed successfully")
+    except Exception as e:
+        print(f"Error during startup data processing: {e}")
+
 
 

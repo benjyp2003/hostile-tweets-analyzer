@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: tweets-analyzer
+  namespace: benjypfeffer-dev
+spec:
+  to:
+    kind: Service
+    name: hostile-tweets-analyzer-app
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge

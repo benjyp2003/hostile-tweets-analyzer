@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tweets-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tweets-analyzer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tweets-analyzer
+    spec:
+      containers:
+        - image: benjypfeffer/hostile-tweets-analyzer:v1
+          name: tweets-analyzer
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tweets-analyzer-secret
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tweets-analyzer-secret
+                  key: MONGO_PASSWORD
+            - name: MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: tweets-analyzer-secret
+                  key: MONGO_DATABASE
+          ports:
+            - containerPort: 8000
+              name: tweets-analyzer

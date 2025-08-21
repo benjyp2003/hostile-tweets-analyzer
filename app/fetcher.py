@@ -1,5 +1,7 @@
 import os
 from pymongo import MongoClient, errors
+from typing import Any
+
 
 
 class Fetcher:
@@ -15,7 +17,7 @@ class Fetcher:
         self.db = self.client[self.DB_NAME]
         self.col = self.db[self.COLLECTION_NAME]
 
-    def fetch_all_docs(self):
+    def fetch_all_docs(self) -> list[dict[str, Any]]:
         """ :returns list of all the docs in the current collection """
         try:
             all_docs = list(self.col.find({}, {"_id": 0}))
